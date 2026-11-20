@@ -1,0 +1,58 @@
+[
+    {
+        "id": 1,
+        "titulo": "string",
+        "autor": "string",
+        "anio": 0,
+        "disponible": true
+    },
+    {
+        "titulo": "string",
+        "autor": "string",
+        "anio": 0,
+        "disponible": true,
+        "id": 2
+    },
+    {
+        "titulo": "string",
+        "autor": "string",
+        "anio": 0,
+        "disponible": true,
+        "id": 3
+    },
+    {
+        "titulo": "string",
+        "autor": "string",
+        "anio": 0,
+        "disponible": true,
+        "id": 4
+    },
+    {
+        "titulo": "string",
+        "autor": "string",
+        "anio": 0,
+        "disponible": false,
+        "id": 5
+    },
+    {
+        "titulo": "string",
+        "autor": "string",
+        "anio": 0,
+        "disponible": false,
+        "id": 6
+    },
+    {
+        "titulo": "string",
+        "autor": "string",
+        "anio": 0,
+        "disponible": true,
+        "id": 7
+    },
+    {
+        "titulo": "string",
+        "autor": "string",
+        "anio": 666,
+        "disponible": true,
+        "id": 8
+    }
+]

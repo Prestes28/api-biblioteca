@@ -3,25 +3,31 @@ import json
 from pydantic import BaseModel, Field
 app = FastAPI()
 
-class Libro(BaseModel):
-    id: int = Field(..., gt=0)
+class LibroCreate(BaseModel):
     titulo: str = Field(..., min_length=3, max_length=100)
     autor: str = Field(..., min_length=3, max_length=100)
     anio: int = Field(..., ge=0)
     disponible: bool = Field(default=True)
 
+class Libro(LibroCreate):
+    id: int = Field(..., gt=0)
+
 def cargar_libros():
     try:
-        with open("libros.json", "r", encoding="utf-8") as file:
+        with open("./datos/libros.json", "r", encoding="utf-8") as file:
             libros = json.load(file)
     except FileNotFoundError:
         libros = []
     return libros
 
 def guardar_libros(libros: list[dict]) -> None:
-    with open("libros.json", "w", encoding="utf-8") as file:
+    with open("./datos/libros.json", "w", encoding="utf-8") as file:
         json.dump(libros, file, indent=4)
 
+def obtener_siguiente_id(libros: list[dict]) -> int:
+    if not libros:
+        return 1
+    return max((libro["id"] for libro in libros), default=0) + 1
 @app.get("/")
 def read_root():
     return {"message": "API de la biblioteca"}
@@ -35,9 +41,10 @@ def buscar_libros(query: str):
     return {"message": f"Buscando libros con la consulta: {query}"} 
 
 @app.post("/libros", response_model=Libro, status_code=201)
-def crear_libro(datos: Libro):
+def crear_libro(datos: LibroCreate):
     libros = cargar_libros()
-    new_libro = datos.model_dump()
+    new_id = obtener_siguiente_id(libros)
+    new_libro = Libro(id=new_id, **datos.model_dump()).model_dump()
     if any(libro["id"] == new_libro["id"] for libro in libros):
         raise HTTPException(status_code=400, detail="El libro con este ID ya existe")
    
