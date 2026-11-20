@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "titulo": "string",
+        "autor": "string",
+        "anio": 0,
+        "disponible": true
+    },
+    {
+        "id": 2,
+        "titulo": "string",
+        "autor": "string",
+        "anio": 0,
+        "disponible": true
+    },
+    {
+        "id": 3,
+        "titulo": "string",
+        "autor": "string",
+        "anio": 0,
+        "disponible": true
+    },
+    {
+        "id": 4,
+        "titulo": "string",
+        "autor": "string",
+        "anio": 0,
+        "disponible": true
+    },
+    {
+        "id": 5,
+        "titulo": "string",
+        "autor": "string",
+        "anio": 0,
+        "disponible": true
+    }
+]
