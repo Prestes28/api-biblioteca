@@ -75,18 +75,21 @@ def listar_libros( autor: str|None = Query(
     return libros
 
 @app.get("/libros/buscar", response_model=list[Libro], status_code=status.HTTP_200_OK)
-def buscar_libros_por_texto(q: str = Query(..., min_length=1, description="Texto a buscar en título o autor")):
+def buscar_libros_por_texto(texto: str = Query(..., min_length=1, description="Texto a buscar en título o autor")):
     libros = cargar_libros()
-    return [libro for libro in libros if q.lower() in libro["titulo"].lower() or q.lower() in libro["autor"].lower()]
+    return [libro for libro in libros if texto.lower() in libro["titulo"].lower() or texto.lower() in libro["autor"].lower()]
 
-@app.post("/libros", response_model=Libro, status_code=201)
+@app.post("/libros", response_model=Libro, status_code=status.HTTP_201_CREATED)
 def crear_libro(datos: LibroCreate):
     libros = cargar_libros()
+    existe = any(libro["titulo"].lower() == datos.titulo.lower() and libro["autor"].lower() == datos.autor.lower() for libro in libros)
+    if existe:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="El libro ya existe")
     new_id = obtener_siguiente_id(libros)
     actualizar_contador(new_id + 1)
     new_libro = Libro(id=new_id, **datos.model_dump()).model_dump()
     if any(libro["id"] == new_libro["id"] for libro in libros):
-        raise HTTPException(status_code=400, detail="El libro con este ID ya existe")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El libro con este ID ya existe")
    
     libros.append(new_libro)
     guardar_libros(libros)
@@ -116,7 +119,7 @@ def eliminar_libro(libro_id: int = Path(..., gt=0, description="ID del libro a e
     libros = cargar_libros()
     libros_filtrados = [libro for libro in libros if libro["id"] != libro_id]
     if len(libros) == len(libros_filtrados):
-        raise HTTPException(status_code=404, detail="Libro no encontrado")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Libro no encontrado")
 
     guardar_libros(libros_filtrados)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -126,7 +129,7 @@ def actualizar_libro(cambios: LibroUpdate, libro_id: int = Path(..., gt=0, descr
     libros = cargar_libros()
     libro = next((libro for libro in libros if libro["id"] == libro_id), None)
     if libro is None:
-        raise HTTPException(status_code=404, detail="Libro no encontrado")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Libro no encontrado")
     updated_libro = {**libro, **cambios.model_dump(exclude_unset=True)}
     libros = [libro if libro["id"] != libro_id else updated_libro for libro in libros]
     guardar_libros(libros)
