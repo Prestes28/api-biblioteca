@@ -1,58 +1,37 @@
 [
     {
-        "id": 1,
-        "titulo": "string",
-        "autor": "string",
-        "anio": 0,
-        "disponible": true
+        "titulo": "leon",
+        "autor": "bruno",
+        "anio": 1001,
+        "disponible": true,
+        "id": 1
     },
     {
-        "titulo": "string",
-        "autor": "string",
-        "anio": 0,
+        "titulo": "leon",
+        "autor": "bruno",
+        "anio": 1001,
         "disponible": true,
         "id": 2
     },
     {
-        "titulo": "string",
-        "autor": "string",
-        "anio": 0,
+        "titulo": "tigren",
+        "autor": "bruno",
+        "anio": 1001,
         "disponible": true,
         "id": 3
     },
     {
-        "titulo": "string",
-        "autor": "string",
-        "anio": 0,
+        "titulo": "TIGRE",
+        "autor": "BRUNO",
+        "anio": 1001,
         "disponible": true,
         "id": 4
     },
     {
-        "titulo": "string",
-        "autor": "string",
-        "anio": 0,
-        "disponible": false,
+        "titulo": "Elefante",
+        "autor": "Elias",
+        "anio": 1001,
+        "disponible": true,
         "id": 5
-    },
-    {
-        "titulo": "string",
-        "autor": "string",
-        "anio": 0,
-        "disponible": false,
-        "id": 6
-    },
-    {
-        "titulo": "string",
-        "autor": "string",
-        "anio": 0,
-        "disponible": true,
-        "id": 7
-    },
-    {
-        "titulo": "string",
-        "autor": "string",
-        "anio": 666,
-        "disponible": true,
-        "id": 8
     }
 ]

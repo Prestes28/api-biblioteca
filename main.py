@@ -1,12 +1,12 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, status, Query
 import json 
 from pydantic import BaseModel, Field
 app = FastAPI()
 
 class LibroCreate(BaseModel):
     titulo: str = Field(..., min_length=3, max_length=100)
-    autor: str = Field(..., min_length=3, max_length=100)
-    anio: int = Field(..., ge=0)
+    autor: str = Field(..., min_length=3, max_length=60)
+    anio: int = Field(..., minimum=1000, maximum=2100)
     disponible: bool = Field(default=True)
 
 class Libro(LibroCreate):
@@ -36,9 +36,10 @@ def read_root():
 def read_libros():
     return cargar_libros()
 
-@app.get("/libros/buscar")
-def buscar_libros(query: str):
-    return {"message": f"Buscando libros con la consulta: {query}"} 
+@app.get("/libros/buscar", response_model=list[Libro], status_code=status.HTTP_200_OK)
+def buscar_libros_por_texto(q: str = Query(..., min_length=1, description="Texto a buscar en título o autor")):
+    libros = cargar_libros()
+    return [libro for libro in libros if q.lower() in libro["titulo"].lower() or q.lower() in libro["autor"].lower()]
 
 @app.post("/libros", response_model=Libro, status_code=201)
 def crear_libro(datos: LibroCreate):
