@@ -1,37 +1,3 @@
 [
-    {
-        "titulo": "string",
-        "autor": "string",
-        "anio": 1000,
-        "disponible": false,
-        "id": 1
-    },
-    {
-        "titulo": "Mundo",
-        "autor": "python",
-        "anio": 1500,
-        "disponible": true,
-        "id": 2
-    },
-    {
-        "titulo": "Mun",
-        "autor": "Python",
-        "anio": 1500,
-        "disponible": true,
-        "id": 3
-    },
-    {
-        "titulo": "Mussss",
-        "autor": "python",
-        "anio": 1199,
-        "disponible": true,
-        "id": 5
-    },
-    {
-        "titulo": "Mussssss",
-        "autor": "python",
-        "anio": 1100,
-        "disponible": true,
-        "id": 6
-    }
+    
 ]
