@@ -61,9 +61,16 @@ def obtener_libro_por_id(libro_id: int = Path(..., gt=0, description="ID del lib
         raise HTTPException(status_code=404, detail="Libro no encontrado")
     return libro   
 
-@app.put("/libros/{libro_id}")
-def actualizar_libro(libro_id: int, libro: dict):  
-    return {"message": f"Libro con ID {libro_id} actualizado", "libro": libro}
+@app.put("/libros/{libro_id}", response_model=Libro, status_code=status.HTTP_200_OK)
+def actualizar_libro(datos: LibroCreate, libro_id: int = Path(..., gt=0, description="ID del libro a actualizar")):
+    libros = cargar_libros()
+    libro = next((libro for libro in libros if libro["id"] == libro_id), None)
+    if libro is None:
+        raise HTTPException(status_code=404, detail="Libro no encontrado")
+    updated_libro = {**libro, **datos.model_dump()}
+    libros = [libro if libro["id"] != libro_id else updated_libro for libro in libros]
+    guardar_libros(libros)
+    return updated_libro
 
 @app.delete("/libros/{libro_id}", status_code=status.HTTP_204_NO_CONTENT)
 def eliminar_libro(libro_id: int = Path(..., gt=0, description="ID del libro a eliminar")):
