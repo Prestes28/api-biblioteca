@@ -12,6 +12,12 @@ class LibroCreate(BaseModel):
 class Libro(LibroCreate):
     id: int = Field(..., gt=0)
 
+class LibroUpdate(BaseModel):
+    titulo: str | None = Field(default=None, min_length=3, max_length=100)
+    autor: str | None = Field(default=None, min_length=3, max_length=60)
+    anio: int | None = Field(default=None, ge=1000, le=2100)
+    disponible: bool | None = None
+
 def cargar_libros():
     try:
         with open("./datos/libros.json", "r", encoding="utf-8") as file:
@@ -28,6 +34,7 @@ def obtener_siguiente_id(libros: list[dict]) -> int:
     if not libros:
         return 1
     return max((libro["id"] for libro in libros), default=0) + 1
+
 @app.get("/")
 def read_root():
     return {"message": "API de la biblioteca"}
@@ -104,8 +111,15 @@ def eliminar_libro(libro_id: int = Path(..., gt=0, description="ID del libro a e
     guardar_libros(libros_filtrados)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@app.patch("/libros/{libro_id}")
-def actualizar_libro(libro_id: int, libro: dict):
-    return {"message": f"Libro con ID {libro_id} actualizado parcialmente", "libro": libro} 
+@app.patch("/libros/{libro_id}", response_model=Libro, status_code=status.HTTP_200_OK)
+def actualizar_libro(cambios: LibroUpdate, libro_id: int = Path(..., gt=0, description="ID del libro a actualizar")):
+    libros = cargar_libros()
+    libro = next((libro for libro in libros if libro["id"] == libro_id), None)
+    if libro is None:
+        raise HTTPException(status_code=404, detail="Libro no encontrado")
+    updated_libro = {**libro, **cambios.model_dump(exclude_unset=True)}
+    libros = [libro if libro["id"] != libro_id else updated_libro for libro in libros]
+    guardar_libros(libros)
+    return updated_libro
 
 

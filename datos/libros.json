@@ -7,10 +7,10 @@
         "id": 1
     },
     {
-        "titulo": "leon",
+        "titulo": "jirafa",
         "autor": "BRUNO",
         "anio": 1001,
-        "disponible": true,
+        "disponible": false,
         "id": 2
     },
     {
