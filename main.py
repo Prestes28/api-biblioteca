@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, status, Query
+from fastapi import FastAPI, HTTPException, status, Query, Path, Response
 import json 
 from pydantic import BaseModel, Field
 app = FastAPI()
@@ -53,17 +53,27 @@ def crear_libro(datos: LibroCreate):
     guardar_libros(libros)
     return new_libro
 
-@app.get("/libros/{libro_id}")
-def read_libro(libro_id: int): 
-    return {"message": f"Detalles del libro con ID: {libro_id}"}    
+@app.get("/libros/{libro_id}",response_model=Libro, status_code=status.HTTP_200_OK)
+def obtener_libro_por_id(libro_id: int = Path(..., gt=0, description="ID del libro a obtener")): 
+    libros = cargar_libros()
+    libro = next((libro for libro in libros if libro["id"] == libro_id), None)
+    if libro is None:
+        raise HTTPException(status_code=404, detail="Libro no encontrado")
+    return libro   
 
 @app.put("/libros/{libro_id}")
 def actualizar_libro(libro_id: int, libro: dict):  
     return {"message": f"Libro con ID {libro_id} actualizado", "libro": libro}
 
-@app.delete("/libros/{libro_id}")
-def eliminar_libro(libro_id: int):
-    return {"message": f"Libro con ID {libro_id} eliminado"}
+@app.delete("/libros/{libro_id}", status_code=status.HTTP_204_NO_CONTENT)
+def eliminar_libro(libro_id: int = Path(..., gt=0, description="ID del libro a eliminar")):
+    libros = cargar_libros()
+    libros_filtrados = [libro for libro in libros if libro["id"] != libro_id]
+    if len(libros) == len(libros_filtrados):
+        raise HTTPException(status_code=404, detail="Libro no encontrado")
+
+    guardar_libros(libros_filtrados)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @app.patch("/libros/{libro_id}")
 def actualizar_parcial_libro(libro_id: int, libro: dict):

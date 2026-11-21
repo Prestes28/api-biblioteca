@@ -14,13 +14,6 @@
         "id": 2
     },
     {
-        "titulo": "tigren",
-        "autor": "bruno",
-        "anio": 1001,
-        "disponible": true,
-        "id": 3
-    },
-    {
         "titulo": "TIGRE",
         "autor": "BRUNO",
         "anio": 1001,
@@ -33,5 +26,12 @@
         "anio": 1001,
         "disponible": true,
         "id": 5
+    },
+    {
+        "titulo": "Elefante",
+        "autor": "Elias",
+        "anio": 1001,
+        "disponible": true,
+        "id": 6
     }
 ]
