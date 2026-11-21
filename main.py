@@ -32,9 +32,31 @@ def obtener_siguiente_id(libros: list[dict]) -> int:
 def read_root():
     return {"message": "API de la biblioteca"}
 
-@app.get("/libros")
-def read_libros():
-    return cargar_libros()
+@app.get("/libros", response_model=list[Libro], status_code=status.HTTP_200_OK)
+def listar_libros( autor: str|None = Query(
+    default=None, 
+    min_length=1,
+    description="Filtrar por autor"),
+    disponible: bool|None = Query(
+    default=None, description="Filtrar por disponibilidad(True/False)"),
+    desde: int|None = Query(
+        default=0,
+          ge=0,
+          description="Cantidad de libros a saltear desde el inicio (por defecto 0)"),
+    limite: int|None = Query(
+        default=100,
+        ge=1,
+        description="Cantidad máxima de libros a retornar (por defecto 100)")):
+    libros = cargar_libros()
+    if autor is not None:
+        libros = [libro for libro in libros if libro["autor"].lower() == autor.lower()]
+    if disponible is not None:
+        libros = [libro for libro in libros if libro["disponible"] == disponible]
+    if desde is not None:
+        libros = libros[desde:]
+    if limite is not None:
+        libros = libros[:limite]
+    return libros
 
 @app.get("/libros/buscar", response_model=list[Libro], status_code=status.HTTP_200_OK)
 def buscar_libros_por_texto(q: str = Query(..., min_length=1, description="Texto a buscar en título o autor")):
@@ -62,7 +84,7 @@ def obtener_libro_por_id(libro_id: int = Path(..., gt=0, description="ID del lib
     return libro   
 
 @app.put("/libros/{libro_id}", response_model=Libro, status_code=status.HTTP_200_OK)
-def actualizar_libro(datos: LibroCreate, libro_id: int = Path(..., gt=0, description="ID del libro a actualizar")):
+def reemplazar_libro(datos: LibroCreate, libro_id: int = Path(..., gt=0, description="ID del libro a actualizar")):
     libros = cargar_libros()
     libro = next((libro for libro in libros if libro["id"] == libro_id), None)
     if libro is None:
@@ -83,7 +105,7 @@ def eliminar_libro(libro_id: int = Path(..., gt=0, description="ID del libro a e
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @app.patch("/libros/{libro_id}")
-def actualizar_parcial_libro(libro_id: int, libro: dict):
+def actualizar_libro(libro_id: int, libro: dict):
     return {"message": f"Libro con ID {libro_id} actualizado parcialmente", "libro": libro} 
 
 

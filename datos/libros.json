@@ -8,7 +8,7 @@
     },
     {
         "titulo": "leon",
-        "autor": "bruno",
+        "autor": "BRUNO",
         "anio": 1001,
         "disponible": true,
         "id": 2
@@ -17,7 +17,7 @@
         "titulo": "Tigre3",
         "autor": "Lucas",
         "anio": 1200,
-        "disponible": true,
+        "disponible": false,
         "id": 4
     },
     {
