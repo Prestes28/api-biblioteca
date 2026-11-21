@@ -31,9 +31,18 @@ def guardar_libros(libros: list[dict]) -> None:
         json.dump(libros, file, indent=4)
 
 def obtener_siguiente_id(libros: list[dict]) -> int:
-    if not libros:
-        return 1
-    return max((libro["id"] for libro in libros), default=0) + 1
+    max_id =  max((libro["id"] for libro in libros), default=0)
+    try:
+        with open("./datos/contador.json", "r", encoding="utf-8") as file:
+            contador = json.load(file)
+            siguiente_id = contador.get("siguiente_id", max_id)
+    except FileNotFoundError:
+        siguiente_id = max_id
+    return max(siguiente_id, max_id + 1)
+
+def actualizar_contador(siguiente_id: int) -> None:
+    with open("./datos/contador.json", "w", encoding="utf-8") as file:
+        json.dump({"siguiente_id": siguiente_id}, file, indent=4)
 
 @app.get("/")
 def read_root():
@@ -74,6 +83,7 @@ def buscar_libros_por_texto(q: str = Query(..., min_length=1, description="Texto
 def crear_libro(datos: LibroCreate):
     libros = cargar_libros()
     new_id = obtener_siguiente_id(libros)
+    actualizar_contador(new_id + 1)
     new_libro = Libro(id=new_id, **datos.model_dump()).model_dump()
     if any(libro["id"] == new_libro["id"] for libro in libros):
         raise HTTPException(status_code=400, detail="El libro con este ID ya existe")

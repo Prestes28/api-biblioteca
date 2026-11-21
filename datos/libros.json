@@ -1,37 +1,3 @@
 [
-    {
-        "titulo": "leon",
-        "autor": "bruno",
-        "anio": 1001,
-        "disponible": true,
-        "id": 1
-    },
-    {
-        "titulo": "jirafa",
-        "autor": "BRUNO",
-        "anio": 1001,
-        "disponible": false,
-        "id": 2
-    },
-    {
-        "titulo": "Tigre3",
-        "autor": "Lucas",
-        "anio": 1200,
-        "disponible": false,
-        "id": 4
-    },
-    {
-        "titulo": "Elefante",
-        "autor": "Elias",
-        "anio": 1001,
-        "disponible": true,
-        "id": 5
-    },
-    {
-        "titulo": "Elefante",
-        "autor": "Elias",
-        "anio": 1001,
-        "disponible": true,
-        "id": 6
-    }
+   
 ]
